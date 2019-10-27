@@ -81,6 +81,6 @@ public:
 	virtual void shotInEnemy(RenderWindow& win, Vector2i p, int movePos, bool& canEnemyShot, Map& enemy);
 	void deckIsDestroyed(int a, int b, Map& enemy);
 
-	inline bool getIsItComp() { return isItComp; }
-	inline short getNumOfEnemyShips() { return numOfEnemyShips; }
+	bool getIsItComp() { return isItComp; }
+	short getNumOfEnemyShips() { return numOfEnemyShips; }
 };

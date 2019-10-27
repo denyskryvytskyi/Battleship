@@ -49,7 +49,7 @@ void ComputerPlayer::randXY()
 void ComputerPlayer::shotInEnemy(RenderWindow& win, Vector2i p, bool& canEnemyShot, Map& enemy)
 {
 
-	if (fireState == defaultRand)// last shoot - missing and there is not wounded decks
+	if (fireState == FireOnEnemy::defaultRand) // last shoot - missing and there is not wounded decks
 	{
 		do {
 			randXY();
@@ -58,7 +58,7 @@ void ComputerPlayer::shotInEnemy(RenderWindow& win, Vector2i p, bool& canEnemySh
 	}
 
 	// if there is wounded decks
-	if (fireState == thereAreWoundDeck || fireState == hitLastShot)
+	if (fireState == FireOnEnemy::thereAreWoundDeck || fireState == FireOnEnemy::hitLastShot)
 	{
 		for (int i = 0; i < 10; i++)
 			for (int j = 0; j < 10; j++)
@@ -105,14 +105,14 @@ void ComputerPlayer::shotInEnemy(RenderWindow& win, Vector2i p, bool& canEnemySh
 		{
 			deckIsDestroyed(enemyX, enemyY, enemy);
 			oneDeckShip--;
-			fireState = defaultRand;
+			fireState = FireOnEnemy::defaultRand;
 		}
 		// if there is a deck nearby
 		// hit and deck is wounded now 
 		else if (((enemyX - 1) >= 0 && enemyShipsOnMap[enemyX - 1][enemyY] == Deck) || ((enemyX + 1) <= 9 && enemyShipsOnMap[enemyX + 1][enemyY] == Deck) || ((enemyY - 1) >= 0 && enemyShipsOnMap[enemyX][enemyY - 1] == Deck) || ((enemyY + 1) <= 9 && enemyShipsOnMap[enemyX][enemyY + 1] == Deck))
 		{
 			enemy.map[enemyX][enemyY].setFillColor(sf::Color::Green);
-			fireState = hitLastShot;
+			fireState = FireOnEnemy::hitLastShot;
 			enemyShipsOnMap[enemyX][enemyY] = Wound;
 		}
 		// if there is a wounded deck nearby
@@ -148,7 +148,7 @@ void ComputerPlayer::shotInEnemy(RenderWindow& win, Vector2i p, bool& canEnemySh
 			if (deckNums != 0)
 			{
 				enemy.map[enemyX][enemyY].setFillColor(sf::Color::Green);
-				fireState = hitLastShot;
+				fireState = FireOnEnemy::hitLastShot;
 				canShotOnMap[enemyX][enemyY] = false;
 				enemyShipsOnMap[enemyX][enemyY] = Wound;
 			}
@@ -187,7 +187,7 @@ void ComputerPlayer::shotInEnemy(RenderWindow& win, Vector2i p, bool& canEnemySh
 
 			// if the ship was destroyed
 			if (deckNums == 0)
-				fireState = defaultRand;
+				fireState = FireOnEnemy::defaultRand;
 		}
 		else if (enemyShipsOnMap[enemyX - 1][enemyY] == Wound || enemyShipsOnMap[enemyX + 1][enemyY] == Wound)
 		{
@@ -218,7 +218,7 @@ void ComputerPlayer::shotInEnemy(RenderWindow& win, Vector2i p, bool& canEnemySh
 			if (deckNums != 0)
 			{
 				enemy.map[enemyX][enemyY].setFillColor(sf::Color::Green);
-				fireState = hitLastShot;
+				fireState = FireOnEnemy::hitLastShot;
 				canShotOnMap[enemyX][enemyY] = false;
 				enemyShipsOnMap[enemyX][enemyY] = Wound;
 			}
@@ -254,7 +254,7 @@ void ComputerPlayer::shotInEnemy(RenderWindow& win, Vector2i p, bool& canEnemySh
 			}
 
 			if (deckNums == 0)
-				fireState = defaultRand;
+				fireState = FireOnEnemy::defaultRand;
 		}
 		numOfEnemyShips = 0;
 
@@ -272,7 +272,7 @@ void ComputerPlayer::shotInEnemy(RenderWindow& win, Vector2i p, bool& canEnemySh
 		canShotOnMap[enemyX][enemyY] = false;
 		canShot = false;
 		canEnemyShot = true;
-		if (fireState == hitLastShot)
-			fireState = thereAreWoundDeck;
+		if (fireState == FireOnEnemy::hitLastShot)
+			fireState = FireOnEnemy::thereAreWoundDeck;
 	}
 }

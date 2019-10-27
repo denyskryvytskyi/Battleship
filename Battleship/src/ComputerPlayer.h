@@ -3,11 +3,11 @@
 
 class ComputerPlayer : public Player {
 private:
-	enum fireOnEnemy 
+	enum class FireOnEnemy 
 	{ 
 		defaultRand = 0, hitLastShot, thereAreWoundDeck 
 	};
-	fireOnEnemy fireState;
+	FireOnEnemy fireState;
 public:
 	ComputerPlayer()
 	{
@@ -27,7 +27,7 @@ public:
 			}
 		}
 
-		fireState = defaultRand;
+		fireState = FireOnEnemy::defaultRand;
 
 		numOfEnemyShips = 1;
 		numberOfTheDeck = 1;
