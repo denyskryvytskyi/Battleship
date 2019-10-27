@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Player.h"
 #include "Map.h"
-#include "ComputerPlayer.h"
+#include "PlayerAI.h"
 #include "Game.h"
 
 using namespace std;

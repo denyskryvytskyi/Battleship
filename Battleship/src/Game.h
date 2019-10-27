@@ -1,71 +1,71 @@
 #pragma once
 #include "Player.h"
-#include "ComputerPlayer.h"
+#include "PlayerAI.h"
 
-enum class GameCondition
+enum class e_GameCondition
 {
 	placingShips = 0, shot, gameover
 };
 
-enum class GameMode
+enum class e_GameMode
 {
 	onePlayer = 1, twoPlayer, exitGame
 };
 
 class Game {
 private:
-	bool shipsAreReady;
-	RenderWindow mWindow;
+	bool m_ShipsAreReady;
+	RenderWindow m_Window;
 
-	Player* p1;
-	Player* p2;
-	ComputerPlayer* pC;
+	Player* m_Player1;
+	Player* m_Player2;
+	PlayerAI* m_PlayerAi;
 
-	Vector2i mousePos; // mouse cursor position
+	Vector2i m_MousePos; // mouse cursor position
 
-	GameCondition gameCondition;
-	GameMode gameMode;
+	e_GameCondition m_GameCondition;
+	e_GameMode m_GameMode;
 public:
-	Game(int playerMode) : mWindow(sf::VideoMode(800, 400), "Battleship")
+	Game(int playerMode) : m_Window(VideoMode(800, 400), "Battleship")
 	{
-		p1 = new Player();
-		p2 = new Player();
+		m_Player1 = new Player();
+		m_Player2 = new Player();
 
-		gameMode = (GameMode) playerMode;
+		m_GameMode = (e_GameMode) playerMode;
 
-		p1->view.setViewport(FloatRect(0, 0, 0.5f, 1)); // left part of the screen
-		p1->view.reset(FloatRect(0, 0, 400, 400));
-		p1->canShot = true;
+		m_Player1->m_Camera.setViewport(FloatRect(0, 0, 0.5f, 1)); // left part of the screen
+		m_Player1->m_Camera.reset(FloatRect(0, 0, 400, 400));
+		m_Player1->m_CanShot = true;
 
-		if (gameMode == GameMode::twoPlayer)
+		if (m_GameMode == e_GameMode::twoPlayer)
 		{
-			p2 = new Player();
-			p2->view.setViewport(FloatRect(0.5f, 0, 0.5f, 1)); // right part of the screen
-			p2->view.reset(FloatRect(0, 0, 400, 400));
-			p2->canShot = false;
+			m_Player2 = new Player();
+			m_Player2->m_Camera.setViewport(FloatRect(0.5f, 0, 0.5f, 1)); // right part of the screen
+			m_Player2->m_Camera.reset(FloatRect(0, 0, 400, 400));
+			m_Player2->m_CanShot = false;
 		}
-		else if (gameMode == GameMode::onePlayer)
+		else if (m_GameMode == e_GameMode::onePlayer)
 		{
-			pC = new ComputerPlayer();
-			pC->view.setViewport(FloatRect(0.5f, 0, 0.5f, 1)); // right part of the screen
-			pC->view.reset(FloatRect(0, 0, 400, 400));
-			pC->canShot = false;
-			pC->addShipsOnMap();
-			pC->setMapColor();
+			m_PlayerAi = new PlayerAI();
+			m_PlayerAi->m_Camera.setViewport(FloatRect(0.5f, 0, 0.5f, 1)); // right part of the screen
+			m_PlayerAi->m_Camera.reset(FloatRect(0, 0, 400, 400));
+			m_PlayerAi->m_CanShot = false;
+			m_PlayerAi->addShipsOnMap();
+			m_PlayerAi->setMapPlayerAiColor();
 		}
 
-		gameCondition = GameCondition::placingShips; 
-		shipsAreReady = false;
+		m_GameCondition = e_GameCondition::placingShips; 
+		m_ShipsAreReady = false;
 	}
 
 	~Game()
 	{
-		delete p1;
+		delete m_Player1;
 
-		if (p2 != nullptr)
-			delete p2;
-		if (pC != nullptr)
-			delete pC;
+		if (m_Player2 != nullptr)
+			delete m_Player2;
+		if (m_PlayerAi != nullptr)
+			delete m_PlayerAi;
 	}
 
 	void run(); // run the game

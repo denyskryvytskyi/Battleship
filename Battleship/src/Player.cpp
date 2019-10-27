@@ -1,5 +1,6 @@
 #include "Player.h"
 
+
 void Player::addShipsOnMap(RenderWindow& win, Vector2i p, int movePos)
 {
 	p = Mouse::getPosition(win); // Get mouse cursor position
@@ -9,128 +10,128 @@ void Player::addShipsOnMap(RenderWindow& win, Vector2i p, int movePos)
 	{
 		for (int l = 0; l < 10; l++)
 		{
-			if (playerMap.map[k][l].getGlobalBounds().contains(p.x, p.y) && playerShipsOnMap[k][l] == None && canPut[k][l] == true) // if the cursor on the cell=[k;l]
+			if (m_PlayerMap.m_Map[k][l].getGlobalBounds().contains(p.x, p.y) && m_PlayerShipsOnMap[k][l] == e_CellConditions::None && m_CanPut[k][l] == true) // if the cursor on the cell=[k;l]
 			{
 				//  set deck
-				if (fourDeckShip != 0)
+				if (m_FourDeckShip != 0)
 				{
 					initShipOnMap(k, l, 4); // pass the nu,ber of the decks
 				}
-				else if (threeDeckShip != 0 && fourDeckShip == 0)
+				else if (m_ThreeDeckShip != 0 && m_FourDeckShip == 0)
 				{
-					if (numberOfTheDeck == 4) numberOfTheDeck = 1;
+					if (m_NumberOfTheDeck == 4) m_NumberOfTheDeck = 1;
 					initShipOnMap(k, l, 3); 
 				}
-				else if (twoDeckShip != 0 && threeDeckShip == 0)
+				else if (m_TwoDeckShip != 0 && m_ThreeDeckShip == 0)
 				{
-					if (numberOfTheDeck == 3) numberOfTheDeck = 1;
+					if (m_NumberOfTheDeck == 3) m_NumberOfTheDeck = 1;
 					initShipOnMap(k, l, 2);
 				}
-				else if (oneDeckShip != 0 && twoDeckShip == 0)
+				else if (m_OneDeckShip != 0 && m_TwoDeckShip == 0)
 				{
 					deckIsReady(k, l);
-					playerShipsOnMap[k][l] = Deck;
+					m_PlayerShipsOnMap[k][l] = e_CellConditions::Deck;
 					// can't set the deck around the ship
-					if ((k - 1) >= 0) canPut[k - 1][l] = false;
-					if ((k + 1) <= 9) canPut[k + 1][l] = false;
-					if ((l - 1) >= 0) canPut[k][l - 1] = false;
-					if ((l + 1) <= 9) canPut[k][l + 1] = false;
+					if ((k - 1) >= 0) m_CanPut[k - 1][l] = false;
+					if ((k + 1) <= 9) m_CanPut[k + 1][l] = false;
+					if ((l - 1) >= 0) m_CanPut[k][l - 1] = false;
+					if ((l + 1) <= 9) m_CanPut[k][l + 1] = false;
 				}
 			}
 		}
 	}
 }
-void Player::setMapColor()
+void Player::setMapPlayerAiColor()
 {
 	for (int i = 0; i < 10; i++)
 		for (int j = 0; j < 10; j++)
 		{
-			playerMap.map[i][j].setFillColor(sf::Color(16, 16, 68));
+			m_PlayerMap.m_Map[i][j].setFillColor(Color(16, 16, 68));
 		}
 }
 
 void Player::deckIsReady(int i, int j)
 {
-	playerMap.map[i][j].setFillColor(sf::Color(100, 100, 100));
-	playerShipsOnMap[i][j] = Deck; 
-	maxNumberOfDecks--;
+	m_PlayerMap.m_Map[i][j].setFillColor(Color(100, 100, 100));
+	m_PlayerShipsOnMap[i][j] = e_CellConditions::Deck;
+	m_MaxNumberOfDecks--;
 	
 	// A deck cann't be placed diagonally 
 	if ((i + 1) <= 9 && (j - 1) >= 0)
-		canPut[i + 1][j - 1] = false;
+		m_CanPut[i + 1][j - 1] = false;
 	if ((i - 1) >= 0 && (j - 1) >= 0)
-		canPut[i - 1][j - 1] = false;
+		m_CanPut[i - 1][j - 1] = false;
 	if ((i - 1) >= 0 && (j + 1) <= 9)
-		canPut[i - 1][j + 1] = false;
+		m_CanPut[i - 1][j + 1] = false;
 	if ((i + 1) <= 9 && (j + 1) <= 9)
-		canPut[i + 1][j + 1] = false;
+		m_CanPut[i + 1][j + 1] = false;
 }
 
 void Player::deckIsDestroyed(int a, int b, Map& enemy)
 {
-	enemyShipsOnMap[a][b] = Kill;
-	enemy.map[a][b].setFillColor(sf::Color::Red);
+	m_EnemyShipsOnMap[a][b] = e_CellConditions::Kill;
+	enemy.m_Map[a][b].setFillColor(Color::Red);
 }
 
 void Player::initShipOnMap(int f, int s, int decs)
 {
-	if (numberOfTheDeck == 1)
+	if (m_NumberOfTheDeck == 1)
 	{
-		numberOfTheDeck++;
+		m_NumberOfTheDeck++;
 		deckIsReady(f, s);
 	}
-	else if ((numberOfTheDeck > 1) && (numberOfTheDeck < decs) &&
-		((playerShipsOnMap[f - 1][s] == Deck) ||
-		(playerShipsOnMap[f + 1][s] == Deck) ||
-			(playerShipsOnMap[f][s - 1] == Deck) ||
-			(playerShipsOnMap[f][s + 1] == Deck)))
+	else if ((m_NumberOfTheDeck > 1) && (m_NumberOfTheDeck < decs) &&
+		((m_PlayerShipsOnMap[f - 1][s] == e_CellConditions::Deck) ||
+		(m_PlayerShipsOnMap[f + 1][s] == e_CellConditions::Deck) ||
+			(m_PlayerShipsOnMap[f][s - 1] == e_CellConditions::Deck) ||
+			(m_PlayerShipsOnMap[f][s + 1] == e_CellConditions::Deck)))
 	{
 		deckIsReady(f, s);
-		numberOfTheDeck++;
+		m_NumberOfTheDeck++;
 	}
 
-	else if (numberOfTheDeck == decs && (playerShipsOnMap[f - 1][s] == Deck || playerShipsOnMap[f + 1][s] == Deck 
-		|| playerShipsOnMap[f][s - 1] == Deck || playerShipsOnMap[f][s + 1] == Deck))
+	else if (m_NumberOfTheDeck == decs && (m_PlayerShipsOnMap[f - 1][s] == e_CellConditions::Deck || m_PlayerShipsOnMap[f + 1][s] == e_CellConditions::Deck
+		|| m_PlayerShipsOnMap[f][s - 1] == e_CellConditions::Deck || m_PlayerShipsOnMap[f][s + 1] == e_CellConditions::Deck))
 	{
 		deckIsReady(f, s);
-		numberOfTheDeck = 1;
+		m_NumberOfTheDeck = 1;
 		switch (decs) {
-		case 2: twoDeckShip--;
+		case 2: m_TwoDeckShip--;
 			break;
-		case 3: threeDeckShip--;
+		case 3: m_ThreeDeckShip--;
 			break;
-		case 4: fourDeckShip--;
+		case 4: m_FourDeckShip--;
 			break;
 		}
 
 		// Cells around the ship are no longer available 
-		if (playerShipsOnMap[f - 1][s] == Deck)
+		if (m_PlayerShipsOnMap[f - 1][s] == e_CellConditions::Deck)
 		{
 			if ((f + 1) <= 9)
-				canPut[f + 1][s] = false;
+				m_CanPut[f + 1][s] = false;
 			if ((f - decs) >= 0)
-				canPut[f - decs][s] = false;
+				m_CanPut[f - decs][s] = false;
 		}
-		else if (playerShipsOnMap[f + 1][s] == Deck)
+		else if (m_PlayerShipsOnMap[f + 1][s] == e_CellConditions::Deck)
 		{
 			if ((f - 1) >= 0)
-				canPut[f - 1][s] = false;
+				m_CanPut[f - 1][s] = false;
 			if ((f + decs) <= 9)
-				canPut[f + decs][s] = false;
+				m_CanPut[f + decs][s] = false;
 		}
-		else if (playerShipsOnMap[f][s - 1] == Deck)
+		else if (m_PlayerShipsOnMap[f][s - 1] == e_CellConditions::Deck)
 		{
 			if ((s + 1) <= 9)
-				canPut[f][s + 1] = false;
+				m_CanPut[f][s + 1] = false;
 			if ((s - decs) >= 0)
-				canPut[f][s - decs] = false;
+				m_CanPut[f][s - decs] = false;
 		}
-		else if (playerShipsOnMap[f][s + 1] == Deck)
+		else if (m_PlayerShipsOnMap[f][s + 1] == e_CellConditions::Deck)
 		{
 			if ((s - 1) >= 0)
-				canPut[f][s - 1] = false;
+				m_CanPut[f][s - 1] = false;
 			if ((s + decs) <= 9)
-				canPut[f][s + decs] = false;
+				m_CanPut[f][s + decs] = false;
 		}
 	}
 }
@@ -142,177 +143,177 @@ void Player::shotInEnemy(RenderWindow& win, Vector2i p, int movePos, bool& canEn
 	for (int i = 0; i < 10; i++)
 		for (int j = 0; j < 10; j++)
 		{
-			if (enemy.map[i][j].getGlobalBounds().contains(p.x, p.y)) // if the mouse cursor on the enemy map
+			if (enemy.m_Map[i][j].getGlobalBounds().contains(p.x, p.y)) // if the mouse cursor on the enemy map
 			{
-				enemyX = i; enemyY = j;
-				if (enemyShipsOnMap[i][j] == Deck)// if hit the deck
+				m_EnemyX = i; m_EnemyY = j;
+				if (m_EnemyShipsOnMap[i][j] == e_CellConditions::Deck)// if hit the deck
 				{
 					// if there isn't any other decks nearby
 					// then destroy the deck
-					if ((((enemyX - 1) >= 0 && enemyShipsOnMap[enemyX - 1][enemyY] == None) || (enemyX - 1) < 0) 
-						&& (((enemyX + 1) <= 9 && enemyShipsOnMap[enemyX + 1][enemyY] == None) || (enemyX + 1) > 9)
-						&& (((enemyY - 1) >= 0 && enemyShipsOnMap[enemyX][enemyY - 1] == None) || (enemyY - 1) < 0) 
-						&& (((enemyY + 1) <= 9 && enemyShipsOnMap[enemyX][enemyY + 1] == None) || (enemyY + 1) > 9))
+					if ((((m_EnemyX - 1) >= 0 && m_EnemyShipsOnMap[m_EnemyX - 1][m_EnemyY] == e_CellConditions::None) || (m_EnemyX - 1) < 0)
+						&& (((m_EnemyX + 1) <= 9 && m_EnemyShipsOnMap[m_EnemyX + 1][m_EnemyY] == e_CellConditions::None) || (m_EnemyX + 1) > 9)
+						&& (((m_EnemyY - 1) >= 0 && m_EnemyShipsOnMap[m_EnemyX][m_EnemyY - 1] == e_CellConditions::None) || (m_EnemyY - 1) < 0) 
+						&& (((m_EnemyY + 1) <= 9 && m_EnemyShipsOnMap[m_EnemyX][m_EnemyY + 1] == e_CellConditions::None) || (m_EnemyY + 1) > 9))
 					{
-						deckIsDestroyed(enemyX, enemyY, enemy);
-						oneDeckShip--;
+						deckIsDestroyed(m_EnemyX, m_EnemyY, enemy);
+						m_OneDeckShip--;
 					}
 					// if there is a deck nearby
 					// then wound the deck
-					else if (((enemyX - 1) >= 0 && enemyShipsOnMap[enemyX - 1][enemyY] == Deck) || ((enemyX + 1) <= 9 
-						&& enemyShipsOnMap[enemyX + 1][enemyY] == Deck) || ((enemyY - 1) >= 0 
-							&& enemyShipsOnMap[enemyX][enemyY - 1] == Deck) || ((enemyY + 1) <= 9 
-								&& enemyShipsOnMap[enemyX][enemyY + 1] == Deck))
+					else if (((m_EnemyX - 1) >= 0 && m_EnemyShipsOnMap[m_EnemyX - 1][m_EnemyY] == e_CellConditions::Deck) || ((m_EnemyX + 1) <= 9
+						&& m_EnemyShipsOnMap[m_EnemyX + 1][m_EnemyY] == e_CellConditions::Deck) || ((m_EnemyY - 1) >= 0
+							&& m_EnemyShipsOnMap[m_EnemyX][m_EnemyY - 1] == e_CellConditions::Deck) || ((m_EnemyY + 1) <= 9
+								&& m_EnemyShipsOnMap[m_EnemyX][m_EnemyY + 1] == e_CellConditions::Deck))
 					{
-						enemy.map[enemyX][enemyY].setFillColor(sf::Color::Green);
-						enemyShipsOnMap[enemyX][enemyY] = Wound;
+						enemy.m_Map[m_EnemyX][m_EnemyY].setFillColor(Color::Green);
+						m_EnemyShipsOnMap[m_EnemyX][m_EnemyY] = e_CellConditions::Wound;
 					}
 					// if there is a wound deck nearby
-					else if (enemyShipsOnMap[enemyX][enemyY - 1] == Wound || enemyShipsOnMap[enemyX][enemyY + 1] == Wound)
+					else if (m_EnemyShipsOnMap[m_EnemyX][m_EnemyY - 1] == e_CellConditions::Wound || m_EnemyShipsOnMap[m_EnemyX][m_EnemyY + 1] == e_CellConditions::Wound)
 					{
-						deckNums = 0;
-						deckWoundNums = 0;
+						m_DeckNums = 0;
+						m_DeckWoundNums = 0;
 
 						// if there is existed decks up or down
-						if (enemyShipsOnMap[enemyX][enemyY - 1] == Wound)
+						if (m_EnemyShipsOnMap[m_EnemyX][m_EnemyY - 1] == e_CellConditions::Wound)
 						{
 							for (int k = 1; k <= 3; k++)
-								if ((enemyY - k) >= 0 && enemyShipsOnMap[enemyX][enemyY - k] != None)
+								if ((m_EnemyY - k) >= 0 && m_EnemyShipsOnMap[m_EnemyX][m_EnemyY - k] != e_CellConditions::None)
 								{
-									if (enemyShipsOnMap[enemyX][enemyY - k] == Deck)
-										deckNums++;
+									if (m_EnemyShipsOnMap[m_EnemyX][m_EnemyY - k] == e_CellConditions::Deck)
+										m_DeckNums++;
 								}
 								else break;
 						}
-						if (enemyShipsOnMap[enemyX][enemyY + 1] == Wound)
+						if (m_EnemyShipsOnMap[m_EnemyX][m_EnemyY + 1] == e_CellConditions::Wound)
 						{
 							for (int k = 1; k <= 3; k++)
-								if ((enemyY + k) <= 9 && enemyShipsOnMap[enemyX][enemyY + k] != None)
+								if ((m_EnemyY + k) <= 9 && m_EnemyShipsOnMap[m_EnemyX][m_EnemyY + k] != e_CellConditions::None)
 								{
-									if (enemyShipsOnMap[enemyX][enemyY + k] == Deck)
-										deckNums++;
+									if (m_EnemyShipsOnMap[m_EnemyX][m_EnemyY + k] == e_CellConditions::Deck)
+										m_DeckNums++;
 								}
 								else break;
 						}
 
 						// if there is existed deck
-						if (deckNums != 0)
+						if (m_DeckNums != 0)
 						{
-							enemy.map[enemyX][enemyY].setFillColor(sf::Color::Green);
-							enemyShipsOnMap[enemyX][enemyY] = Wound;
+							enemy.m_Map[m_EnemyX][m_EnemyY].setFillColor(Color::Green);
+							m_EnemyShipsOnMap[m_EnemyX][m_EnemyY] = e_CellConditions::Wound;
 						}
 						// otherwise destroy the ship
-						else if (deckNums == 0)
+						else if (m_DeckNums == 0)
 						{
-							deckIsDestroyed(enemyX, enemyY, enemy);
-							deckWoundNums = 1;
+							deckIsDestroyed(m_EnemyX, m_EnemyY, enemy);
+							m_DeckWoundNums = 1;
 
 							// calculate wounded decks by vertical
 							for (int a = 1; a <= 3; a++)
 							{
-								if ((enemyY - a) >= 0 && enemyShipsOnMap[enemyX][enemyY - a] != None)
+								if ((m_EnemyY - a) >= 0 && m_EnemyShipsOnMap[m_EnemyX][m_EnemyY - a] != e_CellConditions::None)
 								{
-									if (enemyShipsOnMap[enemyX][enemyY - a] == Wound)
+									if (m_EnemyShipsOnMap[m_EnemyX][m_EnemyY - a] == e_CellConditions::Wound)
 									{
-										deckIsDestroyed(enemyX, enemyY - a, enemy);
-										deckWoundNums++;
+										deckIsDestroyed(m_EnemyX, m_EnemyY - a, enemy);
+										m_DeckWoundNums++;
 									}
 								}
 								else break;
 							}
 							for (int a = 1; a <= 3; a++)
 							{
-								if ((enemyY + a) >= 0 && enemyShipsOnMap[enemyX][enemyY + a] != None)
+								if ((m_EnemyY + a) >= 0 && m_EnemyShipsOnMap[m_EnemyX][m_EnemyY + a] != e_CellConditions::None)
 								{
-									if (enemyShipsOnMap[enemyX][enemyY + a] == Wound)
+									if (m_EnemyShipsOnMap[m_EnemyX][m_EnemyY + a] == e_CellConditions::Wound)
 									{
-										deckIsDestroyed(enemyX, enemyY + a, enemy);
-										deckWoundNums++;
+										deckIsDestroyed(m_EnemyX, m_EnemyY + a, enemy);
+										m_DeckWoundNums++;
 									}
 								}
 								else break;
 							}
 						}
 					}
-					else if (enemyShipsOnMap[enemyX - 1][enemyY] == Wound || enemyShipsOnMap[enemyX + 1][enemyY] == Wound)
+					else if (m_EnemyShipsOnMap[m_EnemyX - 1][m_EnemyY] == e_CellConditions::Wound || m_EnemyShipsOnMap[m_EnemyX + 1][m_EnemyY] == e_CellConditions::Wound)
 					{
-						deckNums = 0;
-						deckWoundNums = 0;
+						m_DeckNums = 0;
+						m_DeckWoundNums = 0;
 
 						// if there is existed decks above or below
-						if (enemyShipsOnMap[enemyX - 1][enemyY] == Wound)
+						if (m_EnemyShipsOnMap[m_EnemyX - 1][m_EnemyY] == e_CellConditions::Wound)
 						{
 							for (int k = 1; k <= 3; k++)
-								if ((enemyX - k) >= 0 && enemyShipsOnMap[enemyX - k][enemyY] != None)
+								if ((m_EnemyX - k) >= 0 && m_EnemyShipsOnMap[m_EnemyX - k][m_EnemyY] != e_CellConditions::None)
 								{
-									if (enemyShipsOnMap[enemyX - k][enemyY] == Deck)
-										deckNums++;
+									if (m_EnemyShipsOnMap[m_EnemyX - k][m_EnemyY] == e_CellConditions::Deck)
+										m_DeckNums++;
 								}
 								else break;
 						}
-						if (enemyShipsOnMap[enemyX + 1][enemyY] == Wound)
+						if (m_EnemyShipsOnMap[m_EnemyX + 1][m_EnemyY] == e_CellConditions::Wound)
 						{
 							for (int k = 1; k <= 3; k++)
-								if ((enemyX + k) <= 9 && enemyShipsOnMap[enemyX + k][enemyY] != None)
+								if ((m_EnemyX + k) <= 9 && m_EnemyShipsOnMap[m_EnemyX + k][m_EnemyY] != e_CellConditions::None)
 								{
-									if (enemyShipsOnMap[enemyX + k][enemyY] == Deck)
-										deckNums++;
+									if (m_EnemyShipsOnMap[m_EnemyX + k][m_EnemyY] == e_CellConditions::Deck)
+										m_DeckNums++;
 								}
 								else break;
 						}
 
 						// if there is a existed deck
 						// then hit the deck
-						if (deckNums != 0)
+						if (m_DeckNums != 0)
 						{
-							enemy.map[enemyX][enemyY].setFillColor(sf::Color::Green);
-							enemyShipsOnMap[enemyX][enemyY] = Wound;
+							enemy.m_Map[m_EnemyX][m_EnemyY].setFillColor(Color::Green);
+							m_EnemyShipsOnMap[m_EnemyX][m_EnemyY] = e_CellConditions::Wound;
 						}
 						// otherwise - destroy the ship
-						else if (deckNums == 0)
+						else if (m_DeckNums == 0)
 						{
-							deckIsDestroyed(enemyX, enemyY, enemy);
-							deckWoundNums = 1;
+							deckIsDestroyed(m_EnemyX, m_EnemyY, enemy);
+							m_DeckWoundNums = 1;
 
 							// calculate number of the wounded decks by vertical
 							for (int a = 1; a <= 3; a++)
 							{
-								if ((enemyX - a) >= 0 && enemyShipsOnMap[enemyX - a][enemyY] != None)
+								if ((m_EnemyX - a) >= 0 && m_EnemyShipsOnMap[m_EnemyX - a][m_EnemyY] != e_CellConditions::None)
 								{
-									if (enemyShipsOnMap[enemyX - a][enemyY] == Wound)
+									if (m_EnemyShipsOnMap[m_EnemyX - a][m_EnemyY] == e_CellConditions::Wound)
 									{
-										deckIsDestroyed(enemyX - a, enemyY, enemy);
-										deckWoundNums++;
+										deckIsDestroyed(m_EnemyX - a, m_EnemyY, enemy);
+										m_DeckWoundNums++;
 									}
 								}
 								else break;
 							}
 							for (int a = 1; a <= 3; a++)
 							{
-								if ((enemyX + a) >= 0 && enemyShipsOnMap[enemyX + a][enemyY] != None)
+								if ((m_EnemyX + a) >= 0 && m_EnemyShipsOnMap[m_EnemyX + a][m_EnemyY] != e_CellConditions::None)
 								{
-									if (enemyShipsOnMap[enemyX + a][enemyY] == Wound)
+									if (m_EnemyShipsOnMap[m_EnemyX + a][m_EnemyY] == e_CellConditions::Wound)
 									{
-										deckIsDestroyed(enemyX + a, enemyY, enemy);
-										deckWoundNums++;
+										deckIsDestroyed(m_EnemyX + a, m_EnemyY, enemy);
+										m_DeckWoundNums++;
 									}
 								}
 								else break;
 							}
 						}
 					}
-					numOfEnemyShips = 0;
+					m_NumOfEnemyShips = 0;
 					// check if the enemy has ships
 					for (int i = 0; i < 10; i++)
 						for (int j = 0; j < 10; j++)
-							if (enemyShipsOnMap[i][j] == Deck)
-								numOfEnemyShips++;
+							if (m_EnemyShipsOnMap[i][j] == e_CellConditions::Deck)
+								m_NumOfEnemyShips++;
 				}
 				// missing
-				else if (enemyShipsOnMap[i][j] == None)
+				else if (m_EnemyShipsOnMap[i][j] == e_CellConditions::None)
 				{
-					enemy.map[i][j].setFillColor(sf::Color::Magenta);
-					canShot = false;
+					enemy.m_Map[i][j].setFillColor(Color::Magenta);
+					m_CanShot = false;
 					canEnemyShot = true;
 				}
 			}

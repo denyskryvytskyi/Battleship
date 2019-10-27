@@ -120,14 +120,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\ComputerPlayer.cpp" />
+    <ClCompile Include="src\PlayerAI.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ComputerPlayer.h" />
+    <ClInclude Include="src\PlayerAI.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Map.h" />
     <ClInclude Include="src\Player.h" />

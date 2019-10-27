@@ -2,21 +2,21 @@
 
 Map::Map()
 {
-	map = new RectangleShape * [rows];
-	for (int i = 0; i < rows; i++)
+	m_Map = new RectangleShape * [m_Rows];
+	for (int i = 0; i < m_Rows; i++)
 	{
-		map[i] = new RectangleShape[cols];
+		m_Map[i] = new RectangleShape[m_Cols];
 	}
 }
 
 Map::~Map()
 {
-	for (int i = 0; i < rows; i++)
+	for (int i = 0; i < m_Rows; i++)
 	{
-		delete[] map[i];
+		delete[] m_Map[i];
 	}
 
-	delete[] map;
+	delete[] m_Map;
 }
 
 void Map::mapGenerate()
@@ -25,11 +25,11 @@ void Map::mapGenerate()
 	{
 		for (int j = 0; j < 10; j++)
 		{
-			map[i][j].setSize(sf::Vector2f(30, 30)); // cell size
-			map[i][j].setFillColor(sf::Color(16, 16, 68));
-			map[i][j].setOutlineThickness(2);
-			map[i][j].setOutlineColor(sf::Color(92, 94, 154));
-			map[i][j].setPosition((i + 2) * 30, (j + 2) * 30);
+			m_Map[i][j].setSize(Vector2f(30, 30)); // cell size
+			m_Map[i][j].setFillColor(Color(16, 16, 68));
+			m_Map[i][j].setOutlineThickness(2);
+			m_Map[i][j].setOutlineColor(Color(92, 94, 154));
+			m_Map[i][j].setPosition((i + 2) * 30, (j + 2) * 30);
 		}
 	}
 }

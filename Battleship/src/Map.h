@@ -5,11 +5,11 @@ using namespace sf;
 
 class Map {
 private:
-	short rows = 10;
-	short cols = 10;
+	short m_Rows = 10;
+	short m_Cols = 10;
 public:
 	void mapGenerate();
-	sf::RectangleShape** map;
+	RectangleShape** m_Map;
 
 	Map();
 	~Map();

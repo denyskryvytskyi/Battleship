@@ -3,9 +3,9 @@
 using namespace std;
 void Game::run()
 {
-	while (mWindow.isOpen())
+	while (m_Window.isOpen())
 	{
-		if (gameCondition == GameCondition::gameover)
+		if (m_GameCondition == e_GameCondition::gameover)
 			break;
 		render();
 		processEvents();
@@ -14,125 +14,126 @@ void Game::run()
 
 void Game::render()
 {
-	mWindow.clear(Color::Yellow);
+	m_Window.clear(Color::Green);
 
-	renderPlayer(p1, 1);
+	renderPlayer(m_Player1, 1);
 
-	if (gameMode == GameMode::twoPlayer)
-		renderPlayer(p2, 2);
-	else if (gameMode == GameMode::onePlayer)
-		renderPlayer(pC, 3);
+	if (m_GameMode == e_GameMode::twoPlayer)
+		renderPlayer(m_Player2, 2);
+	else if (m_GameMode == e_GameMode::onePlayer)
+		renderPlayer(m_PlayerAi, 3);
 
-	mWindow.display();
+	m_Window.display();
 }
 
 void Game::processEvents()
 {
 	Event event;
-	while (mWindow.pollEvent(event))
+	while (m_Window.pollEvent(event))
 	{
-		if (event.type == Event::Closed || gameMode == GameMode::exitGame)
-			mWindow.close();
+		if (event.type == Event::Closed || m_GameMode == e_GameMode::exitGame)
+			m_Window.close();
 
-		if ((p1 && p1->getNumOfEnemyShips() == 0) || (p2 && p2->getNumOfEnemyShips() == 0) || (pC && pC->getNumOfEnemyShips() == 0))
+		if ((m_Player1 && m_Player1->getNumOfEnemyShips() == 0) || (m_Player2 && m_Player2->getNumOfEnemyShips() == 0) || (m_PlayerAi && m_PlayerAi->getNumOfEnemyShips() == 0))
 		{
-			gameCondition = GameCondition::gameover;
-			if (!p1->getNumOfEnemyShips())
+			m_GameCondition = e_GameCondition::gameover;
+			if (!m_Player1->getNumOfEnemyShips())
 			{
 				renderFinish(1);
 			}
-			else if (!p2->getNumOfEnemyShips() && gameMode == GameMode::twoPlayer)
+			else if (!m_Player2->getNumOfEnemyShips() && m_GameMode == e_GameMode::twoPlayer)
 				renderFinish(2);
-			else if (!pC->getNumOfEnemyShips())
+			else if (!m_PlayerAi->getNumOfEnemyShips())
 				renderFinish(3);
 			break;
 		}
 		// All ships are ready
-		if ((p1 && p1->maxNumberOfDecks == 0) && ((p2 && p2->maxNumberOfDecks == 0) || (pC && pC->maxNumberOfDecks == 0)) && gameCondition == GameCondition::placingShips)
+		if ((m_Player1 && m_Player1->m_MaxNumberOfDecks == 0) && ((m_Player2 && m_Player2->m_MaxNumberOfDecks == 0) || (m_PlayerAi && m_PlayerAi->m_MaxNumberOfDecks == 0)) 
+			&& m_GameCondition == e_GameCondition::placingShips)
 		{
-			shipsAreReady = true;
-			gameCondition = GameCondition::shot;
+			m_ShipsAreReady = true;
+			m_GameCondition = e_GameCondition::shot;
 
 			for (int i = 0; i < 10; i++)
 				for (int j = 0; j < 10; j++)
 				{
-					if (gameMode == GameMode::twoPlayer)
+					if (m_GameMode == e_GameMode::twoPlayer)
 					{
-						p1->enemyShipsOnMap[i][j] = p2->playerShipsOnMap[i][j];
-						p2->enemyShipsOnMap[i][j] = p1->playerShipsOnMap[i][j];
+						m_Player1->m_EnemyShipsOnMap[i][j] = m_Player2->m_PlayerShipsOnMap[i][j];
+						m_Player2->m_EnemyShipsOnMap[i][j] = m_Player1->m_PlayerShipsOnMap[i][j];
 					}
-					else if (gameMode == GameMode::onePlayer)
+					else if (m_GameMode == e_GameMode::onePlayer)
 					{
-						p1->enemyShipsOnMap[i][j] = pC->playerShipsOnMap[i][j];
-						pC->enemyShipsOnMap[i][j] = p1->playerShipsOnMap[i][j];
+						m_Player1->m_EnemyShipsOnMap[i][j] = m_PlayerAi->m_PlayerShipsOnMap[i][j];
+						m_PlayerAi->m_EnemyShipsOnMap[i][j] = m_Player1->m_PlayerShipsOnMap[i][j];
 					}
 				}
 		}
 		// Placing ships
-		if ((event.type == Event::MouseButtonPressed) && (shipsAreReady == false))
+		if ((event.type == Event::MouseButtonPressed) && (m_ShipsAreReady == false))
 			if (event.key.code == Mouse::Left)
 			{
-				if (p1->maxNumberOfDecks > 0)
-					p1->addShipsOnMap(mWindow, mousePos, 0);
-				else if (gameMode == GameMode::twoPlayer || p2->maxNumberOfDecks > 0) //Для второго.
-					p2->addShipsOnMap(mWindow, mousePos, 400);
+				if (m_Player1 && m_Player1->m_MaxNumberOfDecks > 0)
+					m_Player1->addShipsOnMap(m_Window, m_MousePos, 0);
+				else if (m_Player2 && (m_GameMode == e_GameMode::twoPlayer || m_Player2->m_MaxNumberOfDecks > 0)) // for the second
+					m_Player2->addShipsOnMap(m_Window, m_MousePos, 400);
 			}
 
 		// Hide player's ships
 		if (event.type == Event::KeyPressed)
 			if (event.key.code == Keyboard::R)
 			{
-				if (p1->maxNumberOfDecks == 0)
-					p1->setMapColor();
-				if (p2->maxNumberOfDecks == 0)
-					p2->setMapColor();
+				if (m_Player1 && m_Player1->m_MaxNumberOfDecks == 0)
+					m_Player1->setMapPlayerAiColor();
+				if (m_Player2 && m_Player2->m_MaxNumberOfDecks == 0)
+					m_Player2->setMapPlayerAiColor();
 			}
 
 		// player shooting
-		if ((event.type == Event::MouseButtonPressed) && (shipsAreReady == true))
+		if ((event.type == Event::MouseButtonPressed) && (m_ShipsAreReady == true))
 			if (event.key.code == Mouse::Left)
 			{
-				if (p1->canShot)
+				if (m_Player1 && m_Player1->m_CanShot)
 				{
-					if (gameMode == GameMode::twoPlayer)
-						p1->shotInEnemy(mWindow, mousePos, 400, p2->canShot, p2->playerMap);
-					else if (gameMode == GameMode::onePlayer)
-						p1->shotInEnemy(mWindow, mousePos, 400, pC->canShot, pC->playerMap);
+					if (m_GameMode == e_GameMode::twoPlayer && m_Player2)
+						m_Player1->shotInEnemy(m_Window, m_MousePos, 400, m_Player2->m_CanShot, m_Player2->m_PlayerMap);
+					else if (m_GameMode == e_GameMode::onePlayer && m_PlayerAi)
+						m_Player1->shotInEnemy(m_Window, m_MousePos, 400, m_PlayerAi->m_CanShot, m_PlayerAi->m_PlayerMap);
 				}
-				else if (gameMode == GameMode::twoPlayer || p2->canShot)
-					p2->shotInEnemy(mWindow, mousePos, 0, p1->canShot, p1->playerMap);
+				else if (m_Player1 && m_Player2 && (m_GameMode == e_GameMode::twoPlayer || m_Player2->m_CanShot))
+					m_Player2->shotInEnemy(m_Window, m_MousePos, 0, m_Player1->m_CanShot, m_Player1->m_PlayerMap);
 			}
 
 		// AI shooting
-		if (pC && pC->canShot)
+		if (m_PlayerAi && m_PlayerAi->m_CanShot)
 		{
-			if (p1)
+			if (m_Player1)
 			{
-				pC->shotInEnemy(mWindow, mousePos, p1->canShot, p1->playerMap);
+				m_PlayerAi->shotInEnemy(m_Window, m_MousePos, m_Player1->m_CanShot, m_Player1->m_PlayerMap);
 			}
 		}
 	}
 }
 void Game::renderPlayer(Player* p, int numPlayer)
 {
-	mWindow.setView(p->view);
+	m_Window.setView(p->m_Camera);
 
 	for (int i = 0; i < 10; i++)
 		for (int j = 0; j < 10; j++)
 		{
-			mWindow.draw(p->playerMap.map[i][j]); // draw one cell
+			m_Window.draw(p->m_PlayerMap.m_Map[i][j]); // draw one cell
 		}
 
 	if (numPlayer == 1)
-		p->playerName.setString("Player 1");
+		p->m_PlayerName.setString("Player 1");
 	else if (numPlayer == 2)
-		p->playerName.setString("Player 2");
+		p->m_PlayerName.setString("Player 2");
 
 	if (p->getIsItComp())
-		p->playerName.setString("Computer");
+		p->m_PlayerName.setString("Computer");
 
-	p->playerName.setPosition(p->view.getCenter().x - 25, 0);
-	mWindow.draw(p->playerName);
+	p->m_PlayerName.setPosition(p->m_Camera.getCenter().x - 25, 0);
+	m_Window.draw(p->m_PlayerName);
 }
 
 void Game::renderFinish(short winner)
@@ -144,7 +145,7 @@ void Game::renderFinish(short winner)
 		Event event;
 		while (win.pollEvent(event))
 		{
-			if (event.type == Event::Closed || gameMode == GameMode::exitGame)
+			if (event.type == Event::Closed || m_GameMode == e_GameMode::exitGame)
 				win.close();
 		}
 		Font font;

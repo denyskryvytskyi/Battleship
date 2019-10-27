@@ -27,14 +27,11 @@
     <ClCompile Include="src\Player.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\ComputerPlayer.cpp">
+    <ClCompile Include="src\PlayerAI.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ComputerPlayer.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -42,6 +39,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Player.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PlayerAI.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

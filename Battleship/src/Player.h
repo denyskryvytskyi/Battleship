@@ -1,78 +1,86 @@
 #pragma once
 #include "Map.h"
 
+enum class e_CellConditions
+{
+	Deck = 1, Wound, None, Kill
+};
+
 class Player {
 protected:
 
 	// Ships count
-	unsigned short fourDeckShip = 1;
-	unsigned short threeDeckShip = 2;
-	unsigned short twoDeckShip = 3;
-	unsigned short oneDeckShip = 4;
+	unsigned short m_FourDeckShip = 1;
+	unsigned short m_ThreeDeckShip = 2;
+	unsigned short m_TwoDeckShip = 3;
+	unsigned short m_OneDeckShip = 4;
 
-	int numberOfTheDeck; // number of the decks of current exposing ship [1;4]
-	short numOfEnemyShips; // count of the remains enemy ships
+	int m_NumberOfTheDeck; // number of the decks of current exposing ship [1;4]
+	short m_NumOfEnemyShips; // count of the remains enemy ships
 
-	bool canPut[10][10]; // can put on the cell
-	bool canShotOnMap[10][10]; // can shoot on the cell
+	static const int m_Rows = 10;
+	static const int m_Cols = 10;
 
-	enum CellConditions
-	{ 
-		Deck = 1, Wound, None, Kill 
-	}; 
+	bool m_CanPut[m_Rows][m_Cols]; // can put on the cell
+	bool m_CanShotOnMap[m_Rows][m_Cols]; // can shoot on the cell
 
-	bool isItComp;
+	bool m_IsAI;
 
-	int enemyX, enemyY; // coordinates of the last shooted enemy ship deck
-	int deckNums; // number of existed decks
-	int deckWoundNums; //  number of wounded decks
+	int m_EnemyX, m_EnemyY; // coordinates of the last shooted enemy ship deck
+	int m_DeckNums; // number of existed decks
+	int m_DeckWoundNums; //  number of wounded decks
 public:
-	Font font;
-	Text playerName;
-	Text finishTextMessage; // Game Over Label
+	Font m_Font;
+	Text m_PlayerName;
+	Text m_FinishTextMessage; // Game Over Label
 
-	Map playerMap;
-	CellConditions playerShipsOnMap[10][10];
-	CellConditions enemyShipsOnMap[10][10];
+	Map m_PlayerMap;
+	e_CellConditions m_PlayerShipsOnMap[m_Rows][m_Cols];
+	e_CellConditions m_EnemyShipsOnMap[m_Rows][m_Cols];
 
-	int maxNumberOfDecks = 20;
-	bool canShot;
+	int m_MaxNumberOfDecks = 20;
+	bool m_CanShot;
 
-	View view; // Camera
+	View m_Camera; // Camera
 	
 	Player():
-		numberOfTheDeck(1),
-		numOfEnemyShips(1),
-		isItComp(false),
-		enemyX(0),
-		enemyY(0),
-		deckNums(0),
-		deckWoundNums(0)
+		m_NumberOfTheDeck(1),
+		m_NumOfEnemyShips(1),
+		m_IsAI(false),
+		m_EnemyX(0),
+		m_EnemyY(0),
+		m_DeckNums(0),
+		m_DeckWoundNums(0),
+		m_CanShot(false),
+		m_CanPut{ true },
+		m_CanShotOnMap{true},
+		m_PlayerShipsOnMap{ e_CellConditions::None },
+		m_EnemyShipsOnMap()
 	{
-		playerMap.mapGenerate();
+		m_PlayerMap.mapGenerate();
 
 		for (int i = 0; i < 10; i++)
 		{
 			for (int j = 0; j < 10; j++)
 			{
-				playerShipsOnMap[i][j] = None;
-				canPut[i][j] = true;
-				canShotOnMap[i][j] = true;
+				m_PlayerShipsOnMap[i][j] = e_CellConditions::None;
+				m_CanPut[i][j] = true;
+				m_CanShotOnMap[i][j] = true;
 			}
 		}
 
-		font.loadFromFile("arial.ttf");
+		m_Font.loadFromFile("arial.ttf");
 
-		playerName.setFont(font);
-		playerName.setFillColor(Color::Red);
-		playerName.setCharacterSize(24);
-
-		finishTextMessage.setFont(font);
-		finishTextMessage.setFillColor(Color::Red);
-		finishTextMessage.setCharacterSize(30);
+		m_PlayerName.setFont(m_Font);
+		m_PlayerName.setFillColor(Color::Blue);
+		m_PlayerName.setCharacterSize(24);
+		
+		m_FinishTextMessage.setFont(m_Font);
+		m_FinishTextMessage.setFillColor(Color::Red);
+		m_FinishTextMessage.setCharacterSize(30);
 	}
 
-	void setMapColor();
+	void setMapPlayerAiColor();
 
 	void initShipOnMap(int s, int f, int decs);
 	void addShipsOnMap(RenderWindow& win, Vector2i p, int movePos);
@@ -81,6 +89,6 @@ public:
 	virtual void shotInEnemy(RenderWindow& win, Vector2i p, int movePos, bool& canEnemyShot, Map& enemy);
 	void deckIsDestroyed(int a, int b, Map& enemy);
 
-	bool getIsItComp() { return isItComp; }
-	short getNumOfEnemyShips() { return numOfEnemyShips; }
+	bool getIsItComp() { return m_IsAI; }
+	short getNumOfEnemyShips() { return m_NumOfEnemyShips; }
 };
