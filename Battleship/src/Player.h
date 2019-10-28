@@ -8,7 +8,6 @@ enum class e_CellConditions
 
 class Player {
 protected:
-
 	// Ships count
 	unsigned short m_FourDeckShip = 1;
 	unsigned short m_ThreeDeckShip = 2;
@@ -29,6 +28,7 @@ protected:
 	int m_EnemyX, m_EnemyY; // coordinates of the last shooted enemy ship deck
 	int m_DeckNums; // number of existed decks
 	int m_DeckWoundNums; //  number of wounded decks
+
 public:
 	Font m_Font;
 	Text m_PlayerName;

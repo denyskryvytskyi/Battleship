@@ -7,6 +7,7 @@ class Map {
 private:
 	short m_Rows = 10;
 	short m_Cols = 10;
+
 public:
 	void mapGenerate();
 	RectangleShape** m_Map;

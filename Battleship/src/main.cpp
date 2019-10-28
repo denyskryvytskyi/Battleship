@@ -10,15 +10,15 @@ int main()
 {
 	short menuItem;
 
-	cout << "----------------------------- HELP -----------------------------\n";
-	cout << "The ships are placed in the next order:\n";
-	cout << "one 4-deck - the one first" << endl;
-	cout << "two 3-deck" << endl;
-	cout << "three 2-deck" << endl;
-	cout << "four 1-deck" << endl;
-	cout << "R - hide ships, when they was placed" << endl;
-	cout << "Green deck - wounded" << endl;
-	cout << "Red deck - destroyed" << endl;
+	cout << "----------------------------- HELP -----------------------------" << endl;
+	cout << "The ships are placed in the next order:" << endl;
+	cout << "1. one 4-deck" << endl;
+	cout << "2. two 3-deck" << endl;
+	cout << "3. three 2-deck" << endl;
+	cout << "4. four 1-deck" << endl;
+	cout << "R - hide ships when they was placed" << endl;
+	cout << "Green deck - ship is wounded" << endl;
+	cout << "Red deck - ship is destroyed" << endl;
 	cout << "Purple deck - miss" << endl;
 
 	do {

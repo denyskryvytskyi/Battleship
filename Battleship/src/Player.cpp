@@ -1,6 +1,5 @@
 #include "Player.h"
 
-
 void Player::addShipsOnMap(RenderWindow& win, Vector2i p, int movePos)
 {
 	p = Mouse::getPosition(win); // Get mouse cursor position
