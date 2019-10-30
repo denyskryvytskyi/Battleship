@@ -14,7 +14,7 @@ void Game::run()
 
 void Game::render()
 {
-	m_Window.clear(Color::Green);
+	m_Window.clear(Color(260, 220, 180));
 
 	renderPlayer(m_Player1, 1);
 
