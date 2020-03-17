@@ -2,7 +2,7 @@
 #define _PLAYER_H
 
 #include <SFML/Graphics.hpp>
-#include "PlayerField.h"
+#include "Map.h"
 #include "Config.h"
 
 enum EShipType
@@ -56,7 +56,7 @@ class Player
 protected:
     EPlayerState mState;
     //
-    PlayerField mField; // карта игрока
+    Map mMap; // карта игрока
     //
     ShipTypes mAvailableShips; // массив кол-ва доступных кораблей каждого типа
     PlacingShip mCurrentPlacingShip; // корабль, который сейчас строится игроком
@@ -65,6 +65,7 @@ protected:
     //
     bool mIsAlive = false; // mAliveDecksCounts != 0
     bool mIsAI = false;
+    sf::Font font;
 
 public:
     unsigned int mId;
@@ -76,22 +77,22 @@ protected:
     void BuildDeck(const sf::Vector2i pos);
     void FinishShipBuilding();
     void TryBlockCell(sf::Vector2i pos);
+    bool TryFire(sf::Vector2i pos);
+    bool CheckKilled(const sf::Vector2i& pos);
+    void SetDeckState(const sf::Vector2i& pos, const ECellState& cellState);
 
 public:
     Player(const unsigned int id, const sf::FloatRect& viewport, const sf::FloatRect& size, std::string name, EPlayerState state, bool isAi);
     //
-    virtual void AddDeck(const sf::Vector2i& pos) = 0;
-    virtual void Fire(const sf::Vector2i pos) = 0;
-    //
     void Update();
-    //
+    virtual void AddDeck(const sf::Vector2i& pos) = 0;
+    bool Fire(const sf::Vector2i pos);
     bool GetNextShipTemplate(PlacingShip& currentShip);
     //
     inline sf::RectangleShape GetCell(unsigned row, unsigned col) const
     {
-        return mField.mCells[row][col].mShape;
+        return mMap.mCells[row][col].mShape;
     }
-    //
     inline EPlayerState GetCurrentState() const { return mState; }
     inline void SetCurrentState(const EPlayerState state) { mState = state; }
     //

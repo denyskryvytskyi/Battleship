@@ -1,8 +1,8 @@
-#include "PlayerField.h"
+#include "Map.h"
 #include "Config.h"
 #include "CommonTypes.h"
 
-PlayerField::PlayerField() :
+Map::Map() :
     mCellSize(cfg::field_cell_size, cfg::field_cell_size)
 {
     mCells = new Cell * [cfg::field_rows];
@@ -12,7 +12,7 @@ PlayerField::PlayerField() :
     }
 }
 
-PlayerField::~PlayerField()
+Map::~Map()
 {
     for (int i = 0; i < cfg::field_rows; i++)
     {
@@ -22,18 +22,18 @@ PlayerField::~PlayerField()
     delete[] mCells;
 }
 
-void PlayerField::ResetColor()
+void Map::ResetColor()
 {
     for (int i = 0; i < cfg::field_rows; i++)
     {
         for (int j = 0; j < cfg::field_cols; j++)
         {
-            mCells[i][j].mShape.setFillColor(CellColor::Water);
+            mCells[i][j].mShape.setFillColor(color::Water);
         }
     }
 }
 
-void PlayerField::Initialize()
+void Map::Initialize()
 {
     for (int i = 0; i < cfg::field_rows; i++)
     {
@@ -41,10 +41,10 @@ void PlayerField::Initialize()
         {
             sf::RectangleShape shape;
             shape.setSize(mCellSize);
-            shape.setFillColor(CellColor::Water);
+            shape.setFillColor(color::Water);
             short borderThick = 2;
             shape.setOutlineThickness(borderThick);
-            shape.setOutlineColor(CellColor::WaterBorder);
+            shape.setOutlineColor(color::WaterBorder);
             shape.setPosition((i + borderThick) * mCellSize.x, (j + borderThick) * mCellSize.y);
 
             mCells[i][j].mShape = shape;

@@ -1,8 +1,7 @@
-#ifndef _PLAYER_FIELD_H
-#define _PLAYER_FIELD_H
+#ifndef _MAP_H
+#define _MAP_H
 
 #include <SFML/Graphics.hpp>
-#include "Math.h"
 
 enum class ECellState
 {
@@ -12,6 +11,7 @@ enum class ECellState
     DeckKilled,
     Free,
     Blocked,
+    Missed
 };
 
 struct Cell
@@ -30,7 +30,7 @@ struct Cell
     {}
 };
 
-class PlayerField {
+class Map {
 private:
     const sf::Vector2f mCellSize;
 
@@ -40,10 +40,10 @@ public:
 public:
     void Initialize();
     //
-    PlayerField();
-    ~PlayerField();
+    Map();
+    ~Map();
     //
     void ResetColor();
 };
 
-#endif // !_PLAYER_FIELD_H
+#endif // !_MAP_H

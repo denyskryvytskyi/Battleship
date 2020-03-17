@@ -104,7 +104,7 @@ void GameManager::ProcessEvents()
 
 void GameManager::Render()
 {
-    mMainWindow.clear(CellColor::Background);
+    mMainWindow.clear(color::Background);
 
     for (PlayerPtr player : mPlayers)
     {

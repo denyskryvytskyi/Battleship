@@ -12,9 +12,7 @@ public:
     RealPlayer(const unsigned int id, const sf::FloatRect& viewport, const sf::FloatRect& size, const std::string name, const EPlayerState state, const bool isAi);
     //
     void AddDeck(const sf::Vector2i& pos) override;
-    //
-    void Fire(const sf::Vector2i pos) override;
-    //
+
 };
 
 #endif // !_REAL_PLAYER_H

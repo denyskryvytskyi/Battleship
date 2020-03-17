@@ -10,7 +10,7 @@ namespace cfg
     static const unsigned int field_cols = 10;
     static const float field_cell_size = 30.f;
     //
-    static const int max_ship_decks_count = 20; // макс число палуб каждого игрока
+    static const int max_ship_decks_count = 20;
 };
 
 #endif // !_CONFIG_H

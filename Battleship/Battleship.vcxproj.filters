@@ -30,10 +30,10 @@
     <ClCompile Include="src\RealPlayer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\PlayerField.cpp">
+    <ClCompile Include="src\Player.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player.cpp">
+    <ClCompile Include="src\Map.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,10 +56,10 @@
     <ClInclude Include="src\Player.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\PlayerField.h">
+    <ClInclude Include="src\CommonTypes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\CommonTypes.h">
+    <ClInclude Include="src\Map.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
