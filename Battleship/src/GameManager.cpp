@@ -4,7 +4,7 @@
 #include "CommonTypes.h"
 
 GameManager::GameManager(const int mode) :
-    mMainWindow(sf::VideoMode(cfg::mode_width, cfg::mode_height), "Battleship"),
+    mMainWindow(sf::VideoMode(cfg::mode_width, cfg::mode_height), "Battleship", sf::Style::Titlebar | sf::Style::Close),
     mSecondPlayerPosOffset(cfg::mode_width / 2),
     mGameMode((EGameMode)mode),
     mGameState(EGameState::PlacingShips),
