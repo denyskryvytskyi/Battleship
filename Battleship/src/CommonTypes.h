@@ -19,7 +19,7 @@ namespace color
     static const sf::Color Building = sf::Color(100, 100, 100); // gray
     static const sf::Color Ready = sf::Color(15, 160, 50); // green
     static const sf::Color Hitted = sf::Color(250, 180, 5); // yellow
-    static const sf::Color Killed = sf::Color(255, 0, 0); // red
+    static const sf::Color Destroyed = sf::Color(255, 0, 0); // red
     static const sf::Color Missed = sf::Color(14, 156, 241); // blue
 };
 

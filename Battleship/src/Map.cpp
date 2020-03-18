@@ -22,13 +22,18 @@ Map::~Map()
     delete[] mCells;
 }
 
-void Map::ResetColor()
+void Map::Reset()
 {
     for (int i = 0; i < cfg::field_rows; i++)
     {
         for (int j = 0; j < cfg::field_cols; j++)
         {
-            mCells[i][j].mShape.setFillColor(color::Water);
+            Cell* cell = &mCells[i][j];
+            cell->mShape.setFillColor(color::Water);
+            if (cell->mState == ECellState::Blocked)
+            {
+                cell->mState = ECellState::Free;
+            }
         }
     }
 }

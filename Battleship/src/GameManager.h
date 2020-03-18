@@ -26,18 +26,18 @@ private:
     //
     EGameState mGameState;
     EGameMode mGameMode;
-    //
     PlayerVector mPlayers;
-    //
     int mSecondPlayerPosOffset;
+    bool mIsShipsHidden;
     //
-    sf::Text mGameOverText;
+    int mPlayerLoseId;
 
 private:
     bool Initialize();
     //
     bool TryPlacing(sf::Vector2i pos);
     bool TryFire(sf::Vector2i pos);
+    void SetPlayerState(const int playerId, const EPlayerState state);
     //
     void HideShips() const;
     void Update();

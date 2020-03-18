@@ -26,28 +26,28 @@ Player::Player(const unsigned int id, const sf::FloatRect& viewport, const sf::F
     }
 }
 
-bool Player::CheckGranted(sf::Vector2i pos, EBuildingDirection& direction) const
+bool Player::CheckGranted(sf::Vector2i pos, EDirection& direction) const
 {
-    EBuildingDirection currentDir = mCurrentPlacingShip.mDirection;
+    EDirection currentDir = mCurrentPlacingShip.mDirection;
 
-    if (pos.x - 1 >= 0 && mMap.mCells[pos.x - 1][pos.y].mState == ECellState::DeckBuilding && currentDir != EBuildingDirection::Vertical)
+    if (pos.x - 1 >= 0 && mMap.mCells[pos.x - 1][pos.y].mState == ECellState::DeckBuilding && currentDir != EDirection::Vertical)
     {
-        direction = EBuildingDirection::Horizontal;
+        direction = EDirection::Horizontal;
         return true;
     }
-    if (pos.x + 1 < cfg::field_cols && mMap.mCells[pos.x + 1][pos.y].mState == ECellState::DeckBuilding && currentDir != EBuildingDirection::Vertical)
+    if (pos.x + 1 < cfg::field_cols && mMap.mCells[pos.x + 1][pos.y].mState == ECellState::DeckBuilding && currentDir != EDirection::Vertical)
     {
-        direction = EBuildingDirection::Horizontal;
+        direction = EDirection::Horizontal;
         return true;
     }
-    if (pos.y - 1 >= 0 && mMap.mCells[pos.x][pos.y - 1].mState == ECellState::DeckBuilding && currentDir != EBuildingDirection::Horizontal)
+    if (pos.y - 1 >= 0 && mMap.mCells[pos.x][pos.y - 1].mState == ECellState::DeckBuilding && currentDir != EDirection::Horizontal)
     {
-        direction = EBuildingDirection::Vertical;
+        direction = EDirection::Vertical;
         return true;
     }
-    if (pos.y + 1 < cfg::field_rows && mMap.mCells[pos.x][pos.y + 1].mState == ECellState::DeckBuilding && currentDir != EBuildingDirection::Horizontal)
+    if (pos.y + 1 < cfg::field_rows && mMap.mCells[pos.x][pos.y + 1].mState == ECellState::DeckBuilding && currentDir != EDirection::Horizontal)
     {
-        direction = EBuildingDirection::Vertical;
+        direction = EDirection::Vertical;
         return true;
     }
 
@@ -60,13 +60,13 @@ void Player::BuildDeck(const sf::Vector2i pos)
     SetDeckState(pos, ECellState::DeckBuilding);
 
     mCurrentPlacingShip.AddDeck();
-    mBuildingDecksPositions.push_back(pos);
+    mCurrentShipDecksPositions.push_back(pos);
     ++mAliveDecksCounts;
 }
 
 void Player::FinishShipBuilding()
 {
-    for (sf::Vector2i pos : mBuildingDecksPositions)
+    for (sf::Vector2i pos : mCurrentShipDecksPositions)
     {
         SetDeckState(pos, ECellState::Deck);
 
@@ -82,7 +82,7 @@ void Player::FinishShipBuilding()
     }
 
     --mAvailableShips[mCurrentPlacingShip.mShipType];
-    mBuildingDecksPositions.clear();
+    mCurrentShipDecksPositions.clear();
 }
 
 void Player::TryBlockCell(sf::Vector2i pos)
@@ -98,32 +98,24 @@ void Player::TryBlockCell(sf::Vector2i pos)
 
 bool Player::TryFire(sf::Vector2i pos)
 {
-    /*
-    1. ѕроверка "если палуба"
-    2. ≈сли палуба, нужно посмотреть соседние клетки (если с какой-то стороны есть - ставим также направление)
-    3. ≈сли р€дом есть палубы не подбитые - ставим состо€ние палубы по позиции pos - DeckHitted
-    4. ≈сли состо€ние соседних примыкающих палуб все DeckHitted - корабль уничтожен
+    ECellState state = mMap.mCells[pos.x][pos.y].mState;
 
-    __ сделать проверку окружающих палуб в рекурсивной функции, также использовать направление, чтобы сократить колличество проверок,
-    __ если уже найдена соседн€€ палуба
-
-    ƒалее:
-    * ”меньшить кол-во живых палуб у противника
-    * ≈сли промах - изменить состо€ние игрока на Wait
-    */
-    if (mMap.mCells[pos.x][pos.y].mState == ECellState::Deck)// если попали в палубу
+    if (state == ECellState::Deck)
     {
-        // проверить все соседние: если true - корабль уничтожен, false - подбит
-        if (CheckKilled(pos))
+        --mAliveDecksCounts;
+
+        if (TryDestroy(pos))
         {
-            SetDeckState(pos, ECellState::DeckKilled);
+            mCurrentShipDecksPositions.push_back(pos);
+            DestroyShip();
         }
         else
         {
+            mCurrentShipDecksPositions.clear();
             SetDeckState(pos, ECellState::DeckHitted);
         }
     }
-    else // мимо
+    else if (state == ECellState::Free)
     {
         SetDeckState(pos, ECellState::Missed);
         return false;
@@ -133,11 +125,46 @@ bool Player::TryFire(sf::Vector2i pos)
 
 }
 
-bool Player::CheckKilled(const sf::Vector2i& pos)
+bool Player::TryDestroy(const sf::Vector2i& pos)
 {
-    // проверить все соседние палубы
+    if (!CheckCell(pos, sf::Vector2i(1, 0)))
+    {
+        return false;
+    }
+    if (!CheckCell(pos, sf::Vector2i(-1, 0)))
+    {
+        return false;
+    }
+    if (!CheckCell(pos, sf::Vector2i(0, 1)))
+    {
+        return false;
+    }
+    if (!CheckCell(pos, sf::Vector2i(0, -1)))
+    {
+        return false;
+    }
 
-    
+    return true;
+}
+
+bool Player::CheckCell(const sf::Vector2i& pos, sf::Vector2i offset)
+{
+    sf::Vector2i checkPos = pos + offset;
+
+    if (checkPos.x < 0 || checkPos.x >= cfg::field_cols || checkPos.y < 0 || checkPos.y >= cfg::field_rows)
+        return true;
+
+    Cell* cell = &mMap.mCells[checkPos.x][checkPos.y];
+
+    if (cell->mState == ECellState::Free || cell->mState == ECellState::Missed)
+    {
+        return true;
+    }
+    if (cell->mState == ECellState::DeckHitted)
+    {
+        mCurrentShipDecksPositions.push_back(checkPos);
+        return CheckCell(checkPos, offset);
+    }
 
     return false;
 }
@@ -146,7 +173,7 @@ void Player::SetDeckState(const sf::Vector2i& pos, const ECellState& cellState)
 {
     Cell* cell = &mMap.mCells[pos.x][pos.y];
     cell->mState = cellState;
-    
+
     sf::Color deckColor;
     switch (cellState)
     {
@@ -159,11 +186,24 @@ void Player::SetDeckState(const sf::Vector2i& pos, const ECellState& cellState)
     case ECellState::DeckHitted:
         deckColor = color::Hitted;
         break;
-    case ECellState::DeckKilled:
-        deckColor = color::Killed;
+    case ECellState::DeckDestroyed:
+        deckColor = color::Destroyed;
+        break;
+    case ECellState::Missed:
+        deckColor = color::Missed;
         break;
     }
     cell->mShape.setFillColor(deckColor);
+}
+
+void Player::DestroyShip()
+{
+    for (sf::Vector2i pos : mCurrentShipDecksPositions)
+    {
+        SetDeckState(pos, ECellState::DeckDestroyed);
+    }
+
+    mCurrentShipDecksPositions.clear();
 }
 
 bool Player::Fire(const sf::Vector2i pos)
@@ -178,9 +218,7 @@ bool Player::Fire(const sf::Vector2i pos)
                 {
                     return true;
                 }
-                //если мимо
                 mState = EPlayerState::Wait;
-                // mEnemy->SetState(EPlayerState::Fire);
             }
         }
     }
@@ -190,11 +228,12 @@ void Player::Update()
 {
     if (mAliveDecksCounts == 0 && mState != EPlayerState::Placing)
     {
-        mIsAlive = false;
+        mState = EPlayerState::Dead;
     }
     else if (mAliveDecksCounts == cfg::max_ship_decks_count && mState == EPlayerState::Placing)
     {
-        mState = EPlayerState::PlacingFinished;
+        HideShips();
+        mState = EPlayerState::Ready;
     }
 }
 
@@ -215,19 +254,19 @@ bool Player::GetNextShipTemplate(PlacingShip& currentShip)
 
 void Player::HideShips()
 {
-    mMap.ResetColor();
+    mMap.Reset();
 }
 
 PlacingShip::PlacingShip() :
     mAvailableDecksCount(0),
     mShipType(),
-    mDirection(EBuildingDirection::None)
+    mDirection(EDirection::None)
 {
 }
 
 PlacingShip::PlacingShip(const EShipType shipType) :
     mShipType(shipType),
-    mDirection(EBuildingDirection::None)
+    mDirection(EDirection::None)
 {
     mAvailableDecksCount = EShipType_Count - mShipType;
 }
@@ -235,5 +274,5 @@ PlacingShip::PlacingShip(const EShipType shipType) :
 void PlacingShip::Reset()
 {
     ResetDecksCount();
-    mDirection = EBuildingDirection::None;
+    mDirection = EDirection::None;
 }

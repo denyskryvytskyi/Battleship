@@ -39,13 +39,13 @@ bool RealPlayer::TryAddDeck(sf::Vector2i pos)
 
     if (!isNewShip)
     {
-        EBuildingDirection direction;
+        EDirection direction;
 
         if (!CheckGranted(pos, direction))
         {
             return false;
         }
-        if (mCurrentPlacingShip.mDirection == EBuildingDirection::None)
+        if (mCurrentPlacingShip.mDirection == EDirection::None)
         {
             mCurrentPlacingShip.mDirection = direction;
         }

@@ -8,7 +8,7 @@ enum class ECellState
     Deck,
     DeckBuilding,
     DeckHitted,
-    DeckKilled,
+    DeckDestroyed,
     Free,
     Blocked,
     Missed
@@ -43,7 +43,7 @@ public:
     Map();
     ~Map();
     //
-    void ResetColor();
+    void Reset();
 };
 
 #endif // !_MAP_H

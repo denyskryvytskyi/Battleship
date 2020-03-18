@@ -18,11 +18,12 @@ enum class EPlayerState
 {
     Fire,
     Placing,
-    PlacingFinished,
+    Ready,
     Wait,
+    Dead
 };
 
-enum class EBuildingDirection
+enum class EDirection
 {
     None, // for single deck ship
     Horizontal,
@@ -36,7 +37,7 @@ private:
 
 public:
     EShipType mShipType;
-    EBuildingDirection mDirection;
+    EDirection mDirection;
 
 public:
     PlacingShip();
@@ -55,15 +56,16 @@ class Player
 
 protected:
     EPlayerState mState;
+    Map mMap;
     //
-    Map mMap; // карта игрока
+    ShipTypes mAvailableShips;
+    PlacingShip mCurrentPlacingShip;
     //
-    ShipTypes mAvailableShips; // массив кол-ва доступных кораблей каждого типа
-    PlacingShip mCurrentPlacingShip; // корабль, который сейчас строится игроком
-    std::vector<sf::Vector2i> mBuildingDecksPositions; // вектор позиций палуб строящегося корабля
-    int mAliveDecksCounts = 0; // кол-во целых палуб
+    // Decks positions of current processed ship (players)
+    std::vector<sf::Vector2i> mCurrentShipDecksPositions;
     //
-    bool mIsAlive = false; // mAliveDecksCounts != 0
+    int mAliveDecksCounts = 0;
+    //
     bool mIsAI = false;
     sf::Font font;
 
@@ -73,13 +75,15 @@ public:
     sf::Text mName;
 
 protected:
-    bool CheckGranted(sf::Vector2i pos, EBuildingDirection& direction) const;
+    bool CheckGranted(sf::Vector2i pos, EDirection& direction) const;
     void BuildDeck(const sf::Vector2i pos);
     void FinishShipBuilding();
     void TryBlockCell(sf::Vector2i pos);
     bool TryFire(sf::Vector2i pos);
-    bool CheckKilled(const sf::Vector2i& pos);
+    bool TryDestroy(const sf::Vector2i& pos);
+    bool CheckCell(const sf::Vector2i& pos, sf::Vector2i offset);
     void SetDeckState(const sf::Vector2i& pos, const ECellState& cellState);
+    void DestroyShip();
 
 public:
     Player(const unsigned int id, const sf::FloatRect& viewport, const sf::FloatRect& size, std::string name, EPlayerState state, bool isAi);
