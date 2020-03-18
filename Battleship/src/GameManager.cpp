@@ -145,7 +145,7 @@ void GameManager::RenderPlayer(PlayerPtr player)
 
 void GameManager::RenderGameOver()
 {
-    sf::RenderWindow gameOver(sf::VideoMode(250, 60), "Game over");
+    sf::RenderWindow gameOver(sf::VideoMode(400, 60), "Game over");
 
     while (gameOver.isOpen())
     {
@@ -158,7 +158,8 @@ void GameManager::RenderGameOver()
         sf::Font font;
         font.loadFromFile("arial.ttf");
         sf::Text txt;
-        txt.setString("Player %d lost" + mPlayerLoseId + 1);
+        std::string playerId = std::to_string(mPlayerLoseId + 1);
+        txt.setString("Player "  + playerId + " lost.");
         txt.setFont(font);
         txt.setFillColor(sf::Color::Red);
 
