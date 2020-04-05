@@ -30,22 +30,22 @@ bool Player::CheckGranted(sf::Vector2i pos, EDirection& direction) const
 {
     EDirection currentDir = mCurrentPlacingShip.mDirection;
 
-    if (pos.x - 1 >= 0 && mMap.mCells[pos.x - 1][pos.y].mState == ECellState::DeckBuilding && currentDir != EDirection::Vertical)
+    if (pos.x - 1 >= 0 && mMap.mCells->at(pos.x - 1, pos.y).mState == ECellState::DeckBuilding && currentDir != EDirection::Vertical)
     {
         direction = EDirection::Horizontal;
         return true;
     }
-    if (pos.x + 1 < cfg::field_cols && mMap.mCells[pos.x + 1][pos.y].mState == ECellState::DeckBuilding && currentDir != EDirection::Vertical)
+    if (pos.x + 1 < cfg::field_cols && mMap.mCells->at(pos.x + 1, pos.y).mState == ECellState::DeckBuilding && currentDir != EDirection::Vertical)
     {
         direction = EDirection::Horizontal;
         return true;
     }
-    if (pos.y - 1 >= 0 && mMap.mCells[pos.x][pos.y - 1].mState == ECellState::DeckBuilding && currentDir != EDirection::Horizontal)
+    if (pos.y - 1 >= 0 && mMap.mCells->at(pos.x, pos.y - 1).mState == ECellState::DeckBuilding && currentDir != EDirection::Horizontal)
     {
         direction = EDirection::Vertical;
         return true;
     }
-    if (pos.y + 1 < cfg::field_rows && mMap.mCells[pos.x][pos.y + 1].mState == ECellState::DeckBuilding && currentDir != EDirection::Horizontal)
+    if (pos.y + 1 < cfg::field_rows && mMap.mCells->at(pos.x, pos.y + 1).mState == ECellState::DeckBuilding && currentDir != EDirection::Horizontal)
     {
         direction = EDirection::Vertical;
         return true;
@@ -89,16 +89,16 @@ void Player::TryBlockCell(sf::Vector2i pos)
 {
     if (pos.x >= 0 && pos.x < cfg::field_cols && pos.y >= 0 && pos.y < cfg::field_rows)
     {
-        if (mMap.mCells[pos.x][pos.y].mState != ECellState::DeckBuilding && mMap.mCells[pos.x][pos.y].mState != ECellState::Deck)
+        if (mMap.mCells->at(pos.x, pos.y).mState != ECellState::DeckBuilding && mMap.mCells->at(pos.x, pos.y).mState != ECellState::Deck)
         {
-            mMap.mCells[pos.x][pos.y].mState = ECellState::Blocked;
+            mMap.mCells->at(pos.x, pos.y).mState = ECellState::Blocked;
         }
     }
 }
 
 bool Player::TryFire(sf::Vector2i pos)
 {
-    ECellState state = mMap.mCells[pos.x][pos.y].mState;
+    ECellState state = mMap.mCells->at(pos.x, pos.y).mState;
 
     if (state == ECellState::Deck)
     {
@@ -154,7 +154,7 @@ bool Player::CheckCell(const sf::Vector2i& pos, sf::Vector2i offset)
     if (checkPos.x < 0 || checkPos.x >= cfg::field_cols || checkPos.y < 0 || checkPos.y >= cfg::field_rows)
         return true;
 
-    Cell* cell = &mMap.mCells[checkPos.x][checkPos.y];
+    Cell* cell = &mMap.mCells->at(checkPos.x, checkPos.y);
 
     if (cell->mState == ECellState::Free || cell->mState == ECellState::Missed)
     {
@@ -171,7 +171,7 @@ bool Player::CheckCell(const sf::Vector2i& pos, sf::Vector2i offset)
 
 void Player::SetDeckState(const sf::Vector2i& pos, const ECellState& cellState)
 {
-    Cell* cell = &mMap.mCells[pos.x][pos.y];
+    Cell* cell = &mMap.mCells->at(pos.x, pos.y);
     cell->mState = cellState;
 
     sf::Color deckColor;
@@ -212,7 +212,7 @@ bool Player::Fire(const sf::Vector2i pos)
     {
         for (int j = 0; j < cfg::field_cols; j++)
         {
-            if (mMap.mCells[i][j].mShape.getGlobalBounds().contains(pos.x, pos.y))
+            if (mMap.mCells->at(i, j).mShape.getGlobalBounds().contains(pos.x, pos.y))
             {
                 if (TryFire(sf::Vector2i(i, j)))
                 {

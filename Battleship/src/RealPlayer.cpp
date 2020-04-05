@@ -12,7 +12,7 @@ void RealPlayer::AddDeck(const sf::Vector2i& pos)
     {
         for (int j = 0; j < cfg::field_cols; j++)
         {
-            Cell* cell = &mMap.mCells[i][j];
+            Cell* cell = &mMap.mCells->at(i, j);
             if (cell->mShape.getGlobalBounds().contains(pos.x, pos.y))
             {
                 if (cell->mState == ECellState::Free)

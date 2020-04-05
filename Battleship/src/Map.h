@@ -2,6 +2,7 @@
 #define _MAP_H
 
 #include <SFML/Graphics.hpp>
+#include "Math.h"
 
 enum class ECellState
 {
@@ -28,6 +29,11 @@ struct Cell
         mShape(shape),
         mState(state)
     {}
+    
+    Cell(const sf::RectangleShape shape) :
+        mShape(shape),
+        mState(ECellState::Free)
+    {}
 };
 
 class Map {
@@ -35,14 +41,12 @@ private:
     const sf::Vector2f mCellSize;
 
 public:
-    Cell** mCells;
+    math::Matrix<Cell>* mCells;
 
 public:
-    void Initialize();
-    //
     Map();
-    ~Map();
     //
+    void Initialize();
     void Reset();
 };
 

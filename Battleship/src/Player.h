@@ -95,7 +95,7 @@ public:
     //
     inline sf::RectangleShape GetCell(unsigned row, unsigned col) const
     {
-        return mMap.mCells[row][col].mShape;
+        return mMap.mCells->at(row, col).mShape;
     }
     inline EPlayerState GetCurrentState() const { return mState; }
     inline void SetCurrentState(const EPlayerState state) { mState = state; }

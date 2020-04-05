@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="src\CommonTypes.h" />
     <ClInclude Include="src\Config.h" />
+    <ClInclude Include="src\Math.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PlayerAI.h" />
     <ClInclude Include="src\GameManager.h" />
