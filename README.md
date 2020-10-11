@@ -2,7 +2,7 @@
 C++/SFML game
 
 # Getting Started
-Requirements: Visual Studio 2019.
+Requirements: Visual Studio 2019 tested only.
 
 `git clone https://github.com/kryvytskyidenys/Battleship`
 
