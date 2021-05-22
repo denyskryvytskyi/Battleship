@@ -9,7 +9,7 @@ Supports only 64 bit SFML version.
 
 # Features
 - Two players mode
-- Single player mode (versus simple AI)
+- Single player mode (versus simple AI) - *isn't implemented yet*
 - Console menu
 
 # Screenshots
