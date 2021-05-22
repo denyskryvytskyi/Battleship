@@ -12,7 +12,7 @@ enum class EGameState
 
 enum class EGameMode
 {
-    OnePlayer,
+    //OnePlayer,
     TwoPlayer,
     ExitGame,
 };

@@ -19,10 +19,10 @@ int main()
 
     do {
         std::cout << "----------------------------- MENU --------------------------------" << std::endl;
-        std::cout << "1. Single player" << std::endl;
-        std::cout << "2. Two players" << std::endl;
-        std::cout << "3. Exit" << std::endl;
-        std::cout << "Your choice:";
+        //std::cout << "1. Single player" << std::endl;
+        std::cout << "1. Two players" << std::endl;
+        std::cout << "2. Exit" << std::endl;
+        std::cout << "Your choice (press 1 or 2):";
 
         std::cin >> gameMode;
 
