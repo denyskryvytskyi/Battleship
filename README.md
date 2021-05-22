@@ -3,7 +3,7 @@ C++/SFML game
 
 # Getting Started
 Requirements: Visual Studio 2019 tested only.
-Supported only 64 bit SFML version.
+Supports only 64 bit SFML version.
 
 `git clone https://github.com/kryvytskyidenys/Battleship`
 
